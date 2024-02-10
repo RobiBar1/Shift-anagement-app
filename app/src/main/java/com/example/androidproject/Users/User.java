@@ -1,4 +1,5 @@
 package com.example.androidproject.Users;
+import java.io.Serializable;
 import java.security.SecureRandom;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -7,7 +8,8 @@ import javax.crypto.spec.PBEKeySpec;
 
 import java.util.Base64;
 
-public class User {
+
+public class User implements Serializable {
     private String id;
     private String firstName;
     private String lastName;

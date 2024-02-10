@@ -118,9 +118,17 @@ public class Weak
         return lastDay;
     }
 
-    public void FillAllDaysWithShifts(int numberOfShiftsToAddPerDay, int numberOfWorkersCanWorkOnEachShift )
+    public void FillAllDaysWithShifts(String numberOfShiftsToAddPerDayString, String numberOfWorkersCanWorkOnEachShiftString )
     throws IllegalArgumentException, Exception//if was shifts in any day they will remove.
     {
+        if(numberOfShiftsToAddPerDayString.equalsIgnoreCase("") ||
+                numberOfWorkersCanWorkOnEachShiftString.equalsIgnoreCase(""))
+        {
+            throw new IllegalArgumentException("Enter numbers to fields");
+        }
+        int numberOfShiftsToAddPerDayInt = Integer.parseInt(numberOfShiftsToAddPerDayString);
+        int numberOfWorkersCanWorkOnEachShiftInt = Integer.parseInt(numberOfWorkersCanWorkOnEachShiftString);
+
         for (Day day: getDays())
         {
             if(day.getNumberOfShitsInThisDay() > 0)
@@ -128,7 +136,7 @@ public class Weak
                 day.CleanAllShiftsFromThatDay();
             }
 
-            day.CreateShifts(numberOfShiftsToAddPerDay, numberOfWorkersCanWorkOnEachShift);
+            day.CreateShifts(numberOfShiftsToAddPerDayInt, numberOfWorkersCanWorkOnEachShiftInt);
         }
     }
 

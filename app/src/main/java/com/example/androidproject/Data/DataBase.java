@@ -57,6 +57,9 @@ public class DataBase
     private DataBase()
     {
         id++;
+        nextWeaks = new ArrayList<>();
+        finishedWeaks = new ArrayList<>();
+        usersList = new HashMap<>();
         setPlaceAddress("1");
         setCompanyName("Enter name");
     }
@@ -81,9 +84,8 @@ public class DataBase
 
     public User RegisterAndLogin(String id, User usr) throws IllegalArgumentException
     {
-        if(getUsersHashMap() == null)
+        if(getUsersHashMap().size() == 0)
         {
-            setUsersHashMap(new HashMap<String, User>());
             getUsersHashMap().put(id, usr);
         }
         else
@@ -116,9 +118,9 @@ public class DataBase
         User usr = null;
         boolean checkIfRegister = false;
 
-        if(getUsersHashMap() == null)
+        if(getUsersHashMap().size() == 0)
         {
-            throw new Exception("Try register before login");
+            throw new Exception("The user does not exist, try register before login");
         }
 
         User.CheckId(id);
@@ -135,7 +137,7 @@ public class DataBase
         }
         else
         {
-            throw new Exception("Try register before login");
+            throw new Exception("The user does not exist, try register before login");
         }
 
         return usr;
@@ -153,7 +155,7 @@ public class DataBase
     {
         Weak weakToReturn = null;
 
-        if(getNextWeaks() == null)
+        if(getNextWeaks().size() == 0)
         {
             weakToReturn = new Weak(day, month, year);
             addNewWeak(weakToReturn);
@@ -168,6 +170,15 @@ public class DataBase
         return weakToReturn;
     }
 
+    public void CheckID(String id) throws NumberFormatException, Exception
+    {
+        User.CheckId(id);
+    }
+
+    public void CheckPassword(String password) throws Exception
+    {
+        User.CheckPassword(password);
+    }
     public Weak CreateNextWeakAndGetIt() throws
             IllegalArgumentException, NumberFormatException, Exception
     {
@@ -189,7 +200,7 @@ public class DataBase
     {
         Weak weakToReturn = null;
 
-        if(getNextWeaks() == null)
+        if(getNextWeaks().size() == 0)
         {
             throw new IllegalArgumentException("There no weaks in system, " +
                     "use function to create first weak");

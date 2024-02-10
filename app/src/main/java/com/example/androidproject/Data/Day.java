@@ -36,11 +36,10 @@ public class Day
             if(numberOfShiftsToAdd > MaxShitsNumberOnThisDay || numberOfShiftsToAdd < 1)
             {
                 throw new IllegalArgumentException(
-                        String.format("The max number of shifts for same day most be in range of: 1 to {0}"
-                                , MaxShitsNumberOnThisDay));
+                        String.format("The max number of shifts for same day most be in range of: 1 to %d", MaxShitsNumberOnThisDay));
             }
 
-            shiftsToday = new Shift[getMaxShitsNumberOnThisDay()];
+            shiftsToday = new Shift[numberOfShiftsToAdd];
 
             setNumberOfShitsInThisDay(numberOfShiftsToAdd);
             for (int i = 0; i < numberOfShiftsToAdd; i++)

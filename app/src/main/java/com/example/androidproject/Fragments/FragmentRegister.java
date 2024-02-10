@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 
 import android.os.Handler;
@@ -13,10 +14,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.androidproject.Data.DataBase;
 import com.example.androidproject.R;
+import com.example.androidproject.Users.User;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,6 +86,7 @@ public class FragmentRegister extends Fragment {
         EditText emailText = v.findViewById(R.id.editTextTextEmailAddress);
         EditText passwordText = v.findViewById(R.id.editTextTextPassword);
         Boolean red = true;
+        final User[] loginUser = new User[1];
 
         Register.setOnClickListener(new View.OnClickListener()
         {
@@ -97,7 +105,8 @@ public class FragmentRegister extends Fragment {
                 try
                 {
                     DataBase dataBase = DataBase.getInstance();
-                    //dataBase.RegisterAndLogin(id, dataBase.CreateUser(id, firstName, lastName, phoneNumber, email, password, "User"));
+                    loginUser[0] = dataBase.RegisterAndLogin(id, dataBase.CreateUser(id, firstName,
+                            lastName, phoneNumber, email, password, "User"));
                 }
                 catch (Exception ex)
                 {
@@ -162,7 +171,24 @@ public class FragmentRegister extends Fragment {
                         @Override
                         public void run()
                         {
-                            Navigation.findNavController(v).navigate(R.id.action_fragmentRegister_to_fragmentWeeks);
+//                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                            ObjectOutputStream oos = null;
+                            try
+                            {
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                ObjectOutputStream oos = new ObjectOutputStream(baos);
+                                oos.writeObject(loginUser[0]);
+                                byte[] serializedData = baos.toByteArray();
+                                Bundle bundle = new Bundle();
+                                bundle.putByteArray("serializedData", serializedData);
+                                Navigation.findNavController(v).navigate(R.id.
+                                        action_fragmentRegister_to_fragmentWeeks, bundle);
+                            }
+                            catch (IOException e)
+                            {
+                                Toast.makeText(getContext(), "Unexpeted Error, try again", Toast.LENGTH_LONG).show();
+                            }
+
                         }
                     }, 3000);
                 }

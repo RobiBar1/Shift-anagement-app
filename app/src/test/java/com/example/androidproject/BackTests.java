@@ -153,7 +153,7 @@ public class BackTests
 
             c = new Weak("4", "1", "2024");
             Day b1 = c.getASpecificDay(2);
-            c.FillAllDaysWithShifts(5, 7);
+            c.FillAllDaysWithShifts(String.format("{0}", 5), String.format("{0}", 7));
             c.CleanShiftsFromAllDays();
             //create next weak after we have 1+ weaks:
             LocalDateTime l = c.getLastDay().plusDays(1);
@@ -162,7 +162,7 @@ public class BackTests
                     ,String.format("%d", l.getYear()));
             //end create next weak
             c.getASpecificDay(1).CreateSingleShift("Morning", 5);
-            c.FillAllDaysWithShifts(3, 14);//will delete morning shift and fill.
+            c.FillAllDaysWithShifts(String.format("{0}", 3), String.format("{0}", 14));//will delete morning shift and fill.
         }
         catch (Exception ex)
         {

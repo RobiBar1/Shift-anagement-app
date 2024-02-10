@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -11,9 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.androidproject.Data.DataBase;
 import com.example.androidproject.R;
+import com.example.androidproject.Users.User;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,6 +78,7 @@ public class FragmentLogin extends Fragment {
         Button login = v.findViewById(R.id.buttonLogin);
         EditText editTextID = v.findViewById(R.id.EditTextIDLoginPage);
         EditText editTextPassword = v.findViewById(R.id.EditTextPasswordLoginPage);
+        final User[] loginUser = new User[1];
 
         login.setOnClickListener(new View.OnClickListener()
         {
@@ -79,33 +87,51 @@ public class FragmentLogin extends Fragment {
             {
                 String id = editTextID.getText().toString();
                 String password = editTextPassword.getText().toString();
-                EditText editText = v.findViewById(R.id.textViewProblems);
+                Boolean successLogin = true;
 
                 try
                 {
                     DataBase dataBase = DataBase.getInstance();
-                    dataBase.LoginWithId(id, password);
+                    dataBase.CheckID(id);
+                    dataBase.CheckPassword(password);
+                    loginUser[0] = dataBase.LoginWithId(id, password);
                 }
                 catch (Exception ex)
                 {
+                    successLogin = false;
                     login.setClickable(false);
-                    if(editText.getCurrentTextColor() != -65536)
+                    login.setTextColor(Color.RED);
+                    Toast.makeText(v.getContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(new Runnable()
                     {
-                        login.setText("Fix according to the instructions in the title and then try login again");
-                        editText.setText(ex.getMessage());
-                        editText.setTextColor(Color.RED);
-                        new Handler().postDelayed(new Runnable()
+                        @Override
+                        public void run()
                         {
-                            @Override
-                            public void run()
-                            {
-                                // This code will run after 5 seconds
-                                login.setText("Login");
-                                login.setClickable(true);
-                            }
-                        }, 5000);
-                    }
+                            login.setClickable(true);
+                            login.setTextColor(Color.WHITE);
+                        }
+                    }, 4000);
+                }
+
+                if(successLogin)
+                {
+                    login.setClickable(false);
                     login.setText("Success");
+                    try
+                    {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ObjectOutputStream oos = new ObjectOutputStream(baos);
+                        oos.writeObject(loginUser[0]);
+                        byte[] serializedData = baos.toByteArray();
+                        Bundle bundle = new Bundle();
+                        bundle.putByteArray("serializedData", serializedData);
+                        Navigation.findNavController(v).navigate(R.id.
+                                action_fragmentRegister_to_fragmentWeeks, bundle);
+                    }
+                    catch (IOException e)
+                    {
+                        Toast.makeText(getContext(), "Unexpeted Error, try again", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });

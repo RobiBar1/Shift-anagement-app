@@ -1,5 +1,8 @@
 package com.example.androidproject.Fragments;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,15 +20,22 @@ import android.widget.Toast;
 import com.example.androidproject.Adapters.ShiftAdapter;
 import com.example.androidproject.Data.DataBase;
 import com.example.androidproject.Data.Day;
+import com.example.androidproject.Data.Shift;
 import com.example.androidproject.Data.Weak;
 import com.example.androidproject.R;
+import com.example.androidproject.ShiftClickListner;
+import com.example.androidproject.Users.User;
+
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentWeeks#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentWeeks extends Fragment {
+public class FragmentWeeks extends Fragment implements ShiftClickListner {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,7 +48,8 @@ public class FragmentWeeks extends Fragment {
     private RecyclerView recyclerViewDays;
     private LinearLayoutManager layoutManager;
     private ShiftAdapter adapter;
-    private DataBase dataBase = DataBase.getInstance();
+    private final Weak[] currentWeak = {null};
+    private User loginUser;
 
     public FragmentWeeks() {
         // Required empty public constructor
@@ -53,13 +64,14 @@ public class FragmentWeeks extends Fragment {
      * @return A new instance of fragment FragmentWeeks.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentWeeks newInstance(String param1, String param2) {
+    public static FragmentWeeks newInstance (String param1, String param2) {
         FragmentWeeks fragment = new FragmentWeeks();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+
     }
 
     @Override
@@ -89,26 +101,106 @@ public class FragmentWeeks extends Fragment {
         EditText editTextDay = v.findViewById(R.id.editTextTextNumverOfDay);
         EditText editTextMonth = v.findViewById(R.id.editTextTextNumverOfMonth);
         EditText editTextYear = v.findViewById(R.id.editTextTextNumverOfYear);
-        Weak currentWeak;
-        Boolean haveCurrentWeak = false;
+        final int[] currentWeakShowBeforeThisWeak = {0};
+
+        if(dataBase.getNextWeaks().size() == 0)
+        {
+            dayOne.setClickable(false);
+            dayOne.setVisibility(View.GONE);
+            dayTwo.setVisibility(View.GONE);
+            dayTwo.setClickable(false);
+            dayThree.setClickable(false);
+            dayThree.setVisibility(View.GONE);
+            dayFour.setClickable(false);
+            dayFour.setVisibility(View.GONE);
+            dayFive.setClickable(false);
+            dayFive.setVisibility(View.GONE);
+            daySix.setClickable(false);
+            daySix.setVisibility(View.GONE);
+            daySeven.setClickable(false);
+            daySeven.setVisibility(View.GONE);
+            nextWeak.setClickable(false);
+            nextWeak.setVisibility(View.GONE);
+        }
 
         createWeakOrLastWeak.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                try {
+                boolean successCreatedWeak = true;
 
-                }
-                if(!haveCurrentWeak)
+                try
                 {
-                    currentWeak = dataBase.CreateFirstWeakAndGetIt(editTextDay.getText(), editTextMonth.getText(),
-                            editTextYear.getText());
-                }
-                else
-                {
+                    if(dataBase.getNextWeaks().size() == 0)
+                    {
+                        dataBase.CreateFirstWeakAndGetIt(editTextDay.getText().toString(),
+                                editTextMonth.getText().toString(), editTextYear.getText().toString());
+                        createWeakOrLastWeak.setText("Create Shifts");
+                        editTextDay.setText("");
+                        editTextMonth.setText("");
+                        editTextYear.setVisibility(View.GONE);
+                        editTextDay.setHint("How much shifts\n per day?");
+                        editTextMonth.setHint("How much workers\n for each shift?");
+                        editTextDay.setTextSize(16);
+                        editTextMonth.setTextSize(16);
+                    }
+                    else if(dataBase.getNextWeaks().get(0).getASpecificDay(1).getShiftsToday() == null)
+                    {
+                        dataBase.getNextWeaks().get(0).FillAllDaysWithShifts(editTextDay.getText().toString(),
+                                editTextMonth.getText().toString());
+                        createWeakOrLastWeak.setText("Previous week");
+                        createWeakOrLastWeak.setTextSize(16);
+                        editTextDay.setVisibility(View.GONE);
+                        editTextMonth.setVisibility(View.GONE);
+                        dayOne.setClickable(true);
+                        dayTwo.setClickable(true);
+                        dayThree.setClickable(true);
+                        dayFour.setClickable(true);
+                        dayFive.setClickable(true);
+                        daySix.setClickable(true);
+                        daySeven.setClickable(true);
+                        nextWeak.setClickable(true);
+                        dayOne.setVisibility(View.VISIBLE);
+                        dayTwo.setVisibility(View.VISIBLE);
+                        dayThree.setVisibility(View.VISIBLE);
+                        dayFour.setVisibility(View.VISIBLE);
+                        dayFive.setVisibility(View.VISIBLE);
+                        daySix.setVisibility(View.VISIBLE);
+                        daySeven.setVisibility(View.VISIBLE);
+                        nextWeak.setVisibility(View.VISIBLE);
 
+                    }
+                    else if(dataBase.getFinishedWeaks().size() == 0)
+                    {
+                        Toast.makeText(v.getContext(), "There no previos week to show, its the first week", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        dataBase.getFinishedWeaks().get(dataBase.getFinishedWeaks().size() - 1);// - currentWeakShowBeforeThisWeak[0]);
+                        //createWeakOrLastWeak[0]++;
+                    }
                 }
+                catch (Exception ex)
+                {
+                    String msg = ex.getMessage();
+                    successCreatedWeak = false;
+
+                    if(msg.equalsIgnoreCase("For input string: \"\""))
+                    {
+                        Toast.makeText(v.getContext(),"Make Sure you fill Day, Month and Year field with valid dates",
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(v.getContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                if(successCreatedWeak)
+                    {
+                        currentWeak[0] = dataBase.getNextWeaks().get(0);
+                    }
             }
         });
 
@@ -117,49 +209,112 @@ public class FragmentWeeks extends Fragment {
             @Override
             public void onClick(View v)
             {
-                //dataBase
-
+                Day dayOne = checkIfHaveWeekAndGetDay(1);//currentWeak[0].getASpecificDay(1);
+                setAdapterAndRecyle(v, dayOne);
             }
         });
-        int i;
-        Weak weak;
-        Day fortry = null;
 
-        try
+        dayTwo.setOnClickListener(new View.OnClickListener()
         {
-            weak = new Weak("8", "2", "2024");
-            weak.FillAllDaysWithShifts(3, 32);
-            fortry = weak.getASpecificDay(1);
-        }
-        catch (Exception e)
-        {
-            Toast toast = new Toast(getContext());
-            toast.setText(e.getMessage());
-            toast.show();
-        }
-        try
-        {
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(v.getContext(), "day two is clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         recyclerViewDays = v.findViewById(R.id.RecyclerViewDays);
         layoutManager = new LinearLayoutManager(v.getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDays.setLayoutManager(layoutManager);
         recyclerViewDays.setItemAnimator(new DefaultItemAnimator());
 
-        ShiftAdapter adapter = new ShiftAdapter(fortry.getShiftsToday());
-        recyclerViewDays.setAdapter(adapter);
+        try
+        {
+            Bundle arguments = getArguments();
+            byte[] serializedData = arguments.getByteArray("serializedData");
+            ByteArrayInputStream bais = new ByteArrayInputStream(serializedData);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            loginUser = (User) ois.readObject();
         }
         catch (Exception ex)
         {
-            int a = 5;
+            Toast.makeText(this.getContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        try {
-            return v;
+        return v;
+    }
+
+    private void setAdapterAndRecyle(View v, Day day)
+    {
+        adapter = new ShiftAdapter(day.getShiftsToday(), this);
+        recyclerViewDays.setAdapter(adapter);
+    }
+    private Day checkIfHaveWeekAndGetDay(int dayNumber)
+    {
+        return currentWeak[0].getASpecificDay(dayNumber);
+    }
+    @Override
+    public void onShiftClicked(Shift shift)
+    {
+        try
+        {
+            showOptionDialog(this.getContext(), shift);
         }
         catch (Exception ex)
         {
-            int a = 5;
+            Toast.makeText(this.getContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
         }
-        return v;
+    }
+
+    private void showOptionDialog(Context v, Shift shift) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("What you want to do?"); // Set the title
+
+        // Set the options and their click listeners
+        builder.setItems(new String[]{"Join shift", "Remove me from shift", "Show who work in this shift"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0)
+                {
+                    try
+                    {
+                        shift.JoinToShift(loginUser);
+                        adapter.notifyDataSetChanged();
+                    }
+                    catch (Exception ex)
+                    {
+                        Toast.makeText(v, ex.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                } else if (which == 1)
+                {
+                    try
+                    {
+                        shift.RemoveFromShift(loginUser);
+                        adapter.notifyDataSetChanged();
+                    }
+                    catch (Exception ex)
+                    {
+                        Toast.makeText(v, ex.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                } else if(which == 2)
+                {
+                    ArrayList<User> userList = shift.getWorkersInShiftList();
+                    if(userList.size() == 0)
+                    {
+                        Toast.makeText(v, "There no workers in this shift yet", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        for (User usr : userList) {
+                            Toast.makeText(v, "Full name: " + usr.getLastName() + " " +
+                                    usr.getFirstName() + "\nid: " + usr.getId(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+        });
+
+        builder.create().show();
     }
 
 }

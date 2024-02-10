@@ -37,7 +37,8 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="use 9 numbers"
-            android:inputType="number" />
+            android:inputType="number"
+            android:text="316043528" />
 
         <TextView
             android:id="@+id/textViewID"
@@ -68,7 +69,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:hint="Last name" />
+                android:hint="Last name"
+                android:text="robi" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -81,7 +83,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:hint="First name" />
+                android:hint="First name"
+                android:text="bar" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -110,7 +113,8 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="use 10 numbers"
-            android:inputType="number" />
+            android:inputType="number"
+            android:text="0503333598" />
 
         <TextView
             android:id="@+id/textViewPhoneNumber"
@@ -138,7 +142,8 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="Use gmail"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:text="heybey@gmail.com" />
 
         <TextView
             android:id="@+id/textViewEmail"
@@ -166,7 +171,8 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="Enter password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:text="heybey" />
 
         <TextView
             android:id="@+id/textViewPassword"

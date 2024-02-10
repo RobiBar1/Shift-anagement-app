@@ -107,7 +107,10 @@ public class Shift {
             userAddSeccsefuly = true;
         }
 
-        user.setNumberOfShiftsWorkedThatMonth(user.getNumberOfShiftsWorkedThatMonth() + 1);
+        if(userAddSeccsefuly)
+        {
+            user.setNumberOfShiftsWorkedThatMonth(user.getNumberOfShiftsWorkedThatMonth() + 1);
+        }
 
         return userAddSeccsefuly;
     }

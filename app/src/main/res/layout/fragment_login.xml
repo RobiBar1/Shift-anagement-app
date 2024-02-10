@@ -16,7 +16,7 @@
         android:layout_marginEnd="10dp"
         android:layout_weight="0"
         android:ems="10"
-        android:hint="Phone number"
+        android:hint="ID number"
         android:inputType="phone" />
 
     <EditText
@@ -48,14 +48,5 @@
         android:layout_weight="0"
         android:onClick="loginClicked"
         android:text="Login" />
-
-    <TextView
-        android:id="@+id/textViewProblems"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_weight="0"
-        android:text="sakldjaskldjaslkdjalskdjaskldjasd"
-        android:textSize="24sp" />
 
 </LinearLayout>
