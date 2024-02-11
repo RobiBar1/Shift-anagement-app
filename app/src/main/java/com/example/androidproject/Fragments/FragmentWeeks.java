@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.androidproject.Adapters.ShiftAdapter;
@@ -101,6 +102,13 @@ public class FragmentWeeks extends Fragment implements ShiftClickListner {
         EditText editTextDay = v.findViewById(R.id.editTextTextNumverOfDay);
         EditText editTextMonth = v.findViewById(R.id.editTextTextNumverOfMonth);
         EditText editTextYear = v.findViewById(R.id.editTextTextNumverOfYear);
+        TextView dateDayOne = v.findViewById(R.id.textViewDateDayOne);
+        TextView dateDayTwo = v.findViewById(R.id.textViewDateDayTwo);
+        TextView dateDayThree = v.findViewById(R.id.textViewDateDayThree);
+        TextView dateDayFour = v.findViewById(R.id.textViewDateDayFour);
+        TextView dateDayFive = v.findViewById(R.id.textViewDateDayFive);
+        TextView dateDaySix = v.findViewById(R.id.textViewDateDaySix);
+        TextView dateDaySeven = v.findViewById(R.id.textViewDateDaySeven);
         final int[] currentWeakShowBeforeThisWeak = {0};
 
         if(dataBase.getNextWeaks().size() == 0)
@@ -129,10 +137,11 @@ public class FragmentWeeks extends Fragment implements ShiftClickListner {
             public void onClick(View v)
             {
                 boolean successCreatedWeak = true;
+                ArrayList<Weak> weakList = dataBase.getNextWeaks();
 
                 try
                 {
-                    if(dataBase.getNextWeaks().size() == 0)
+                    if(weakList.size() == 0)
                     {
                         dataBase.CreateFirstWeakAndGetIt(editTextDay.getText().toString(),
                                 editTextMonth.getText().toString(), editTextYear.getText().toString());
@@ -145,29 +154,47 @@ public class FragmentWeeks extends Fragment implements ShiftClickListner {
                         editTextDay.setTextSize(16);
                         editTextMonth.setTextSize(16);
                     }
-                    else if(dataBase.getNextWeaks().get(0).getASpecificDay(1).getShiftsToday() == null)
+                    else if(weakList.get(0).getASpecificDay(1).getShiftsToday() == null)
                     {
+                        Weak firstWeak = weakList.get(0);
                         dataBase.getNextWeaks().get(0).FillAllDaysWithShifts(editTextDay.getText().toString(),
                                 editTextMonth.getText().toString());
+
                         createWeakOrLastWeak.setText("Previous week");
-                        createWeakOrLastWeak.setTextSize(16);
+                        createWeakOrLastWeak.setTextSize(14);
+
                         editTextDay.setVisibility(View.GONE);
                         editTextMonth.setVisibility(View.GONE);
+
                         dayOne.setClickable(true);
-                        dayTwo.setClickable(true);
-                        dayThree.setClickable(true);
-                        dayFour.setClickable(true);
-                        dayFive.setClickable(true);
-                        daySix.setClickable(true);
-                        daySeven.setClickable(true);
-                        nextWeak.setClickable(true);
+                        dateDayOne.setText(firstWeak.getASpecificDay(1).getDate());
                         dayOne.setVisibility(View.VISIBLE);
+
+                        dayTwo.setClickable(true);
+                        dateDayTwo.setText(firstWeak.getASpecificDay(2).getDate());
                         dayTwo.setVisibility(View.VISIBLE);
+
+                        dayThree.setClickable(true);
+                        dateDayThree.setText(firstWeak.getASpecificDay(3).getDate());
                         dayThree.setVisibility(View.VISIBLE);
+
+                        dayFour.setClickable(true);
+                        dateDayFour.setText(firstWeak.getASpecificDay(4).getDate());
                         dayFour.setVisibility(View.VISIBLE);
+
+                        dayFive.setClickable(true);
+                        dateDayFive.setText(firstWeak.getASpecificDay(5).getDate());
                         dayFive.setVisibility(View.VISIBLE);
+
+                        daySix.setClickable(true);
+                        dateDaySix.setText(firstWeak.getASpecificDay(6).getDate());
                         daySix.setVisibility(View.VISIBLE);
+
+                        daySeven.setClickable(true);
+                        dateDaySeven.setText(firstWeak.getASpecificDay(7).getDate());
                         daySeven.setVisibility(View.VISIBLE);
+
+                        nextWeak.setClickable(true);
                         nextWeak.setVisibility(View.VISIBLE);
 
                     }

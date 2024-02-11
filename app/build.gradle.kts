@@ -32,7 +32,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))//i add that
