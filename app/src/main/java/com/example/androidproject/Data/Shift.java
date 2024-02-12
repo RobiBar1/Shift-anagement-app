@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Shift {
     private static double id = 0;
+    private final double myId;
     private String shiftType;
     private int numberOfWorkersNeedMoreToShift;
     private ArrayList<User> workersInShiftList;
@@ -42,10 +43,15 @@ public class Shift {
         setShiftType(shiftType);
         setNumberOfWorkersNeedMoreToShift(numberOfWorkersCanWorkOnTheShift);
         workersInShiftList = new ArrayList<User>(numberOfWorkersCanWorkOnTheShift);
+        myId = id;
         id++;
     }
 
-    public static double getId() {
+    public double getMyId()
+    {
+        return myId;
+    }
+    public double getId() {
         return id;
     }
 

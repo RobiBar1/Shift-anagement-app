@@ -211,6 +211,13 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <Button
+        android:id="@+id/buttonCalculateSalery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="Calculate my salary" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="135dp"
